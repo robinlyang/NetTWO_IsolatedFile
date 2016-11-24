@@ -17,10 +17,47 @@ namespace NetTWO_IsolatedFile
         public string name;
         public double salary;
     }
+
+    [Serializable]
+    class worker
+    {
+        public string name;
+        public double salary;
+        private int rate = 123;
+        protected long phone = 4034567894;
+        public void save()
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            FileStream f = new FileStream(@"C:\Users\ryang\Desktop\workers.dat", FileMode.Create);
+            b.Serialize(f, this);
+            f.Close();
+        }
+        public worker load()
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            //using command is a memory technique that disposes the memory (i.e. f.Close()) as soon as the program 
+            //hits the closing '}'
+            using (FileStream f = new FileStream(@"C:\Users\ryang\Desktop\workers.dat", FileMode.Open))
+            {
+                return (worker)b.Deserialize(f);
+            }
+        }
+    }
     class Program
     {
         static void Main(string[] args)
         {
+            //Saving with Serialization
+            worker w2 = new worker();
+            w2.name = "bob";
+            w2.salary = 80000;
+            w2.save();
+            //Loading from Serialization file
+            worker w3 = new worker();
+            w3 = w3.load();
+            Console.WriteLine("w3: " + w3.name);
+
+
             IsolatedStorageFileStream f = new IsolatedStorageFileStream("abc", FileMode.Create);
             //do NOT give a directory for file name
             StreamWriter w = new StreamWriter(f);
